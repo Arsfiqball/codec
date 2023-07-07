@@ -8,22 +8,11 @@ package featurepkg
 
 import (
 	"context"
-	"feature/internal/application/action"
-	"feature/internal/application/resource"
-	"feature/internal/persistence/pgrepo"
-	"feature/internal/protocol/fiberhandler"
 )
 
 // Injectors from wire.go:
 
 func New(ctx context.Context, cfg Config) (*FeatureName, error) {
-	db := cfg.Database
-	something := pgrepo.NewSomething(db)
-	service := action.NewService(something)
-	resourceService := resource.NewService(something)
-	handler := fiberhandler.NewHandler(service, resourceService)
-	featureName := &FeatureName{
-		handler: handler,
-	}
+	featureName := &FeatureName{}
 	return featureName, nil
 }

@@ -8,6 +8,15 @@ func NewEntity() Entity {
 	}
 }
 
+func NewEntityClone(ent Entity) Entity {
+	return &entityState{
+		id:       ent.ID(),
+		name:     ent.Name(),
+		email:    ent.Email(),
+		password: ent.Password(),
+	}
+}
+
 func NewEntityWithData(
 	id string,
 	name string,

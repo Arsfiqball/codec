@@ -8,5 +8,5 @@ type Repo interface {
 	Delete(context.Context, Entity) (Entity, error)
 	GetOne(context.Context, Query) (Entity, error)
 	GetList(context.Context, Query) ([]Entity, error)
-	GetStat(context.Context, Query) (Stat, error)
+	GetStat(context.Context, Query) ([]Stat, error)
 }

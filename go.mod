@@ -3,14 +3,17 @@ module feature
 go 1.19
 
 require (
-	github.com/Arsfiqball/talkback-lancer v0.0.0-20230416183648-737c1c552e32
+	github.com/Arsfiqball/talkback-lancer v0.0.0-20230708111128-3d17b1f1f6df
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gofiber/fiber/v2 v2.43.0
 	github.com/google/uuid v1.3.0
+	gorm.io/gorm v1.25.2
 )
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	go.opentelemetry.io/otel v1.14.0 // indirect
 )
 

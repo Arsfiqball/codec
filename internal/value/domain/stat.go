@@ -1,17 +1,17 @@
 package domain
 
 type Stat interface {
-	Fields() []string
+	Name() string
 	Count() int
 }
 
 type statState struct {
-	fields []string
-	count  int
+	name  string
+	count int
 }
 
-func (s statState) Fields() []string {
-	return s.fields
+func (s statState) Name() string {
+	return s.name
 }
 
 func (s statState) Count() int {

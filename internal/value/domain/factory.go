@@ -32,12 +32,12 @@ func NewEntityWithData(
 }
 
 func NewStat(
-	fields []string,
+	name string,
 	count int,
 ) Stat {
 	return &statState{
-		fields: fields,
-		count:  count,
+		name:  name,
+		count: count,
 	}
 }
 

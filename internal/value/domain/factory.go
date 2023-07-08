@@ -31,54 +31,6 @@ func NewEntityWithData(
 	}
 }
 
-func NewQuery() Query {
-	return &queryState{}
-}
-
-func NewQueryWithData(
-	conditions []Condition,
-	search string,
-	limit int,
-	skip int,
-	sort []Sort,
-	accumulator []string,
-	group []string,
-	with []string,
-) Query {
-	return &queryState{
-		conditions:  conditions,
-		search:      search,
-		limit:       limit,
-		skip:        skip,
-		sort:        sort,
-		accumulator: accumulator,
-		group:       group,
-		with:        with,
-	}
-}
-
-func NewCondition(
-	field string,
-	op string,
-	values []string,
-) Condition {
-	return &conditionState{
-		field:  field,
-		op:     op,
-		values: values,
-	}
-}
-
-func NewSort(
-	field string,
-	desc bool,
-) Sort {
-	return &sortState{
-		field: field,
-		desc:  desc,
-	}
-}
-
 func NewStat(
 	fields []string,
 	count int,

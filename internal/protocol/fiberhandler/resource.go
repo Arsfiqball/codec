@@ -176,3 +176,28 @@ func (r *Resource) GetStat(c *fiber.Ctx) error {
 
 	return FormatSuccess(c, stat)
 }
+
+func (r *Resource) BulkOps(c *fiber.Ctx) error {
+	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/BulkOps")
+	defer span.End()
+
+	var (
+		ops  []resource.Ops
+		user user.Identity
+	)
+
+	if err := parser.UserIdentityToken(c.Locals("user").(string), &user); err != nil {
+		return FormatErrorWithCode(c, err, codeErrUnauthorized)
+	}
+
+	if err := parser.DomainBulkOpsJSON(c.Body(), &ops); err != nil {
+		return FormatErrorWithCode(c, err, codeErrBadRequest)
+	}
+
+	list, err := r.service.BulkOps(ctx, ops, user)
+	if err != nil {
+		return FormatError(c, err)
+	}
+
+	return FormatSuccess(c, list)
+}

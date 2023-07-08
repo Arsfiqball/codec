@@ -1,142 +1,47 @@
 package domain
 
 import (
-	validation "github.com/go-ozzo/ozzo-validation"
+	"errors"
+	"fmt"
+
+	"github.com/Arsfiqball/talkback-lancer"
 )
 
-type Condition interface {
-	Field() string
-	Op() string
-	Values() []string
-	Validate() error
+type Query struct {
+	talkback.Query
+	Search string
 }
 
-type conditionState struct {
-	field  string
-	op     string
-	values []string
-}
-
-func (c conditionState) Field() string {
-	return c.field
-}
-
-func (c conditionState) Op() string {
-	return c.op
-}
-
-func (c conditionState) Values() []string {
-	return c.values
-}
-
-func (c conditionState) Validate() error {
-	errs := validation.Errors{
-		"field":  validation.Validate(c.field, validation.Required, validation.In(stringsToInterfaces(QueryableFields)...)),
-		"op":     validation.Validate(c.op, validation.Required),
-		"values": validation.Validate(c.values, validation.Required),
-	}
-
-	return errs.Filter()
-}
-
-type Sort interface {
-	Field() string
-	Desc() bool
-}
-
-type sortState struct {
-	field string
-	desc  bool
-}
-
-func (s sortState) Field() string {
-	return s.field
-}
-
-func (s sortState) Desc() bool {
-	return s.desc
-}
-
-type Query interface {
-	Conditions() []Condition
-	Search() string
-	Limit() int
-	Skip() int
-	Sort() []Sort
-	Accumulator() []string
-	Group() []string
-	With() []string
-	Validate() error
-}
-
-type queryState struct {
-	conditions  []Condition
-	search      string
-	limit       int
-	skip        int
-	sort        []Sort
-	accumulator []string
-	group       []string
-	with        []string
-}
-
-func (q queryState) Conditions() []Condition {
-	return q.conditions
-}
-
-func (q queryState) Search() string {
-	return q.search
-}
-
-func (q queryState) Limit() int {
-	return q.limit
-}
-
-func (q queryState) Skip() int {
-	return q.skip
-}
-
-func (q queryState) Sort() []Sort {
-	return q.sort
-}
-
-func (q queryState) Accumulator() []string {
-	return q.accumulator
-}
-
-func (q queryState) Group() []string {
-	return q.group
-}
-
-func (q queryState) With() []string {
-	return q.with
-}
-
-func (q queryState) Validate() error {
-	errs := validation.Errors{}
-
-	for _, c := range q.conditions {
-		if err := c.Validate(); err != nil {
-			errs["conditions"] = err
+func (q Query) Validate() error {
+	for _, c := range q.Conditions {
+		if !c.Valid() || !isQueryableField(c.Field) {
+			return errors.New(fmt.Sprintf("invalid condition for %s", c.Field))
 		}
 	}
 
-	errs["limit"] = validation.Validate(q.limit, validation.Min(1))
-	errs["skip"] = validation.Validate(q.skip, validation.Min(0))
-	errs["sort"] = validation.Validate(q.sort, validation.In(stringsToInterfaces(SortableFields)...))
-	errs["accumulator"] = validation.Validate(q.accumulator, validation.In(stringsToInterfaces(AccumulableFields)...))
-	errs["group"] = validation.Validate(q.group, validation.In(stringsToInterfaces(GroupableFields)...))
-	errs["with"] = validation.Validate(q.with, validation.In(stringsToInterfaces(WithableFields)...))
-
-	return errs.Filter()
-}
-
-func stringsToInterfaces(ss []string) []interface{} {
-	is := make([]interface{}, len(ss))
-
-	for i, v := range ss {
-		is[i] = v
+	for _, s := range q.Sort {
+		if !isSortableField(s.Field) {
+			return errors.New(fmt.Sprintf("invalid sort for %s", s.Field))
+		}
 	}
 
-	return is
+	for _, a := range q.Accumulator {
+		if !isAccumulableField(a) {
+			return errors.New(fmt.Sprintf("invalid accumulator for %s", a))
+		}
+	}
+
+	for _, g := range q.Group {
+		if !isGroupableField(g) {
+			return errors.New(fmt.Sprintf("invalid group for %s", g))
+		}
+	}
+
+	for _, w := range q.With {
+		if !isWithableField(w) {
+			return errors.New(fmt.Sprintf("invalid with for %s", w))
+		}
+	}
+
+	return nil
 }

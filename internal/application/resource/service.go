@@ -15,6 +15,7 @@ type IService interface {
 	GetOne(context.Context, domain.Query, user.Identity) (domain.Entity, error)
 	GetList(context.Context, domain.Query, user.Identity) ([]domain.Entity, error)
 	GetStat(context.Context, domain.Query, user.Identity) ([]domain.Stat, error)
+	BulkOps(context.Context, []Ops, user.Identity) ([]OpsResult, error)
 }
 
 type Service struct {

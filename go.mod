@@ -3,6 +3,7 @@ module feature
 go 1.19
 
 require (
+	github.com/Arsfiqball/talkback-lancer v0.0.0-20230416183648-737c1c552e32
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gofiber/fiber/v2 v2.43.0
 	github.com/google/uuid v1.3.0

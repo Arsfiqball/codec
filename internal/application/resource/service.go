@@ -9,12 +9,12 @@ import (
 )
 
 type IService interface {
-	Create(context.Context, domain.Patch, user.Entity) (domain.Entity, error)
-	Update(context.Context, domain.Query, domain.Patch, user.Entity) (domain.Entity, error)
-	Delete(context.Context, domain.Query, user.Entity) (domain.Entity, error)
-	GetOne(context.Context, domain.Query, user.Entity) (domain.Entity, error)
-	GetList(context.Context, domain.Query, user.Entity) ([]domain.Entity, error)
-	GetStat(context.Context, domain.Query, user.Entity) ([]domain.Stat, error)
+	Create(context.Context, domain.Patch, user.Identity) (domain.Entity, error)
+	Update(context.Context, domain.Query, domain.Patch, user.Identity) (domain.Entity, error)
+	Delete(context.Context, domain.Query, user.Identity) (domain.Entity, error)
+	GetOne(context.Context, domain.Query, user.Identity) (domain.Entity, error)
+	GetList(context.Context, domain.Query, user.Identity) ([]domain.Entity, error)
+	GetStat(context.Context, domain.Query, user.Identity) ([]domain.Stat, error)
 }
 
 type Service struct {

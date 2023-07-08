@@ -18,7 +18,7 @@ type OpsResult struct {
 	Error  error
 }
 
-func (s *Service) BulkOps(ctx context.Context, ops []Ops, user user.Entity) ([]OpsResult, error) {
+func (s *Service) BulkOps(ctx context.Context, ops []Ops, user user.Identity) ([]OpsResult, error) {
 	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.BulkOps")
 	defer span.End()
 

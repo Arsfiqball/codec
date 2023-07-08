@@ -6,7 +6,7 @@ import (
 	"feature/internal/value/user"
 )
 
-func (s *Service) GetStat(ctx context.Context, query domain.Query, user user.Entity) ([]domain.Stat, error) {
+func (s *Service) GetStat(ctx context.Context, query domain.Query, user user.Identity) ([]domain.Stat, error) {
 	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.GetStat")
 	defer span.End()
 
@@ -19,5 +19,15 @@ func (s *Service) GetStat(ctx context.Context, query domain.Query, user user.Ent
 		return nil, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
+	if err := s.authorizeGetStat(user, stat); err != nil {
+		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
+	}
+
 	return stat, nil
+}
+
+func (s *Service) authorizeGetStat(u user.Identity, stat []domain.Stat) error {
+	// TODO: implement authorization logic
+
+	return nil
 }

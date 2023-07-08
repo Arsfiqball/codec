@@ -6,7 +6,7 @@ import (
 	"feature/internal/value/user"
 )
 
-func (s *Service) GetOne(ctx context.Context, query domain.Query, user user.Entity) (domain.Entity, error) {
+func (s *Service) GetOne(ctx context.Context, query domain.Query, user user.Identity) (domain.Entity, error) {
 	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.GetOne")
 	defer span.End()
 
@@ -19,9 +19,15 @@ func (s *Service) GetOne(ctx context.Context, query domain.Query, user user.Enti
 		return nil, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
-	if err := ent.AuthorizeRead(user); err != nil {
+	if err := s.authorizeGetOne(user, ent); err != nil {
 		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	return ent, nil
+}
+
+func (s *Service) authorizeGetOne(u user.Identity, ent domain.Entity) error {
+	// TODO: implement authorization logic
+
+	return nil
 }

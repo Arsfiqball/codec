@@ -59,6 +59,7 @@ func (s sortState) Desc() bool {
 
 type Query interface {
 	Conditions() []Condition
+	Search() string
 	Limit() int
 	Skip() int
 	Sort() []Sort
@@ -70,6 +71,7 @@ type Query interface {
 
 type queryState struct {
 	conditions  []Condition
+	search      string
 	limit       int
 	skip        int
 	sort        []Sort
@@ -80,6 +82,10 @@ type queryState struct {
 
 func (q queryState) Conditions() []Condition {
 	return q.conditions
+}
+
+func (q queryState) Search() string {
+	return q.search
 }
 
 func (q queryState) Limit() int {

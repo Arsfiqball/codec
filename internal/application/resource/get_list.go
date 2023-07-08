@@ -6,7 +6,7 @@ import (
 	"feature/internal/value/user"
 )
 
-func (s *Service) GetList(ctx context.Context, query domain.Query, user user.Entity) ([]domain.Entity, error) {
+func (s *Service) GetList(ctx context.Context, query domain.Query, user user.Identity) ([]domain.Entity, error) {
 	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.GetList")
 	defer span.End()
 
@@ -19,11 +19,15 @@ func (s *Service) GetList(ctx context.Context, query domain.Query, user user.Ent
 		return nil, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
-	for _, ent := range ents {
-		if err := ent.AuthorizeRead(user); err != nil {
-			return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
-		}
+	if err := s.authorizeGetList(user, ents); err != nil {
+		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	return ents, nil
+}
+
+func (s *Service) authorizeGetList(u user.Identity, ents []domain.Entity) error {
+	// TODO: implement authorization logic
+
+	return nil
 }

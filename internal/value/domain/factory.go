@@ -37,6 +37,7 @@ func NewQuery() Query {
 
 func NewQueryWithData(
 	conditions []Condition,
+	search string,
 	limit int,
 	skip int,
 	sort []Sort,
@@ -46,6 +47,7 @@ func NewQueryWithData(
 ) Query {
 	return &queryState{
 		conditions:  conditions,
+		search:      search,
 		limit:       limit,
 		skip:        skip,
 		sort:        sort,

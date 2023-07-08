@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"feature/internal/value/user"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
@@ -14,10 +12,6 @@ type Entity interface {
 	Password() string
 	Patch(Patch) error
 	Validate() error
-	AuthorizeCreate(user.Entity) error
-	AuthorizeUpdate(user.Entity) error
-	AuthorizeRead(user.Entity) error
-	AuthorizeDelete(user.Entity) error
 }
 
 type entityState struct {
@@ -68,20 +62,4 @@ func (e entityState) Validate() error {
 	}
 
 	return errs.Filter()
-}
-
-func (e entityState) AuthorizeCreate(u user.Entity) error {
-	return nil
-}
-
-func (e entityState) AuthorizeUpdate(u user.Entity) error {
-	return nil
-}
-
-func (e entityState) AuthorizeDelete(u user.Entity) error {
-	return nil
-}
-
-func (e entityState) AuthorizeRead(u user.Entity) error {
-	return nil
 }

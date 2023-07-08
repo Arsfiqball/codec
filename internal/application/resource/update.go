@@ -2,11 +2,12 @@ package resource
 
 import (
 	"context"
+	"errors"
 	"feature/internal/value/domain"
 	"feature/internal/value/user"
 )
 
-func (s *Service) Update(ctx context.Context, query domain.Query, patch domain.Patch, user user.Entity) (domain.Entity, error) {
+func (s *Service) Update(ctx context.Context, query domain.Query, patch domain.Patch, user user.Identity) (domain.Entity, error) {
 	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.Update")
 	defer span.End()
 
@@ -29,7 +30,7 @@ func (s *Service) Update(ctx context.Context, query domain.Query, patch domain.P
 		return nil, NewError(err, err.Error(), ErrCodeInvalidEntity)
 	}
 
-	if err := ent.AuthorizeUpdate(user); err != nil {
+	if err := s.authorizeUpdate(user, ent); err != nil {
 		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
@@ -43,4 +44,14 @@ func (s *Service) Update(ctx context.Context, query domain.Query, patch domain.P
 	}
 
 	return ent, nil
+}
+
+func (s *Service) authorizeUpdate(u user.Identity, ent domain.Entity) error {
+	// TODO: implement authorization logic
+
+	if u.Provider() == user.ProviderGuest {
+		return errors.New("guest user can't update resource")
+	}
+
+	return nil
 }

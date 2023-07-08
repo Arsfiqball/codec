@@ -6,16 +6,34 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func enumServe(enums []string) fiber.Handler {
+var fieldLabel = map[string]string{
+	domain.FieldID:       "ID",
+	domain.FieldName:     "Name",
+	domain.FieldEmail:    "Email",
+	domain.FieldPassword: "Password",
+	domain.FieldCount:    "Count",
+}
+
+func labelizeEnumFields(fields []string) map[string]string {
+	enums := make(map[string]string)
+
+	for _, field := range fields {
+		enums[field] = fieldLabel[field]
+	}
+
+	return enums
+}
+
+func enumServe(enums map[string]string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.JSON(enums)
+		return FormatSuccess(c, enums)
 	}
 }
 
 var (
-	SortableFields    = enumServe(domain.SortableFields)
-	QueryableFields   = enumServe(domain.QueryableFields)
-	GroupableFields   = enumServe(domain.GroupableFields)
-	WithableFields    = enumServe(domain.WithableFields)
-	AccumulableFields = enumServe(domain.AccumulableFields)
+	SortableFields    = enumServe(labelizeEnumFields(domain.SortableFields))
+	QueryableFields   = enumServe(labelizeEnumFields(domain.QueryableFields))
+	GroupableFields   = enumServe(labelizeEnumFields(domain.GroupableFields))
+	WithableFields    = enumServe(labelizeEnumFields(domain.WithableFields))
+	AccumulableFields = enumServe(labelizeEnumFields(domain.AccumulableFields))
 )

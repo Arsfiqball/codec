@@ -2,6 +2,7 @@ package fiberhandler
 
 import (
 	"feature/internal/application/resource"
+	"feature/internal/protocol/fiberhandler/formatter"
 	"feature/internal/protocol/fiberhandler/parser"
 	"feature/internal/value/domain"
 	"feature/internal/value/user"
@@ -44,7 +45,7 @@ func (r *Resource) Create(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, ent)
+	return FormatSuccess(c, formatter.FormatDomainEntityDTO(ent))
 }
 
 func (r *Resource) Update(c *fiber.Ctx) error {
@@ -74,7 +75,7 @@ func (r *Resource) Update(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, ent)
+	return FormatSuccess(c, formatter.FormatDomainEntityDTO(ent))
 }
 
 func (r *Resource) Delete(c *fiber.Ctx) error {
@@ -99,7 +100,7 @@ func (r *Resource) Delete(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, ent)
+	return FormatSuccess(c, formatter.FormatDomainEntityDTO(ent))
 }
 
 func (r *Resource) GetOne(c *fiber.Ctx) error {
@@ -124,7 +125,7 @@ func (r *Resource) GetOne(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, ent)
+	return FormatSuccess(c, formatter.FormatDomainEntityDTO(ent))
 }
 
 func (r *Resource) GetList(c *fiber.Ctx) error {
@@ -149,7 +150,13 @@ func (r *Resource) GetList(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, list)
+	dtos := []formatter.DomainEntityDTO{}
+
+	for _, ent := range list {
+		dtos = append(dtos, formatter.FormatDomainEntityDTO(ent))
+	}
+
+	return FormatSuccess(c, dtos)
 }
 
 func (r *Resource) GetStat(c *fiber.Ctx) error {
@@ -174,7 +181,13 @@ func (r *Resource) GetStat(c *fiber.Ctx) error {
 		return FormatError(c, err)
 	}
 
-	return FormatSuccess(c, stat)
+	dtos := []formatter.DomainStatDTO{}
+
+	for _, ent := range stat {
+		dtos = append(dtos, formatter.FormatDomainStatDTO(ent))
+	}
+
+	return FormatSuccess(c, dtos)
 }
 
 func (r *Resource) BulkOps(c *fiber.Ctx) error {

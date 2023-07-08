@@ -40,10 +40,3 @@ func NewStat(
 		count: count,
 	}
 }
-
-func NewOmittable[T any](value T) Omittable[T] {
-	return &omittableState[T]{
-		value: value,
-		valid: true,
-	}
-}

@@ -10,16 +10,16 @@ import (
 )
 
 type DomainPatchDTO struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     omittable[string] `json:"name"`
+	Email    omittable[string] `json:"email"`
+	Password omittable[string] `json:"password"`
 }
 
 func (dto DomainPatchDTO) ToPatch() domain.Patch {
 	return domain.Patch{
-		Name:     domain.NewOmittable(dto.Name),
-		Email:    domain.NewOmittable(dto.Email),
-		Password: domain.NewOmittable(dto.Password),
+		Name:     dto.Name,
+		Email:    dto.Email,
+		Password: dto.Password,
 	}
 }
 

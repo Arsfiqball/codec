@@ -32,7 +32,7 @@ func (d *Domain) Create(ctx context.Context, ent domain.Entity) (domain.Entity, 
 	row := mapper.NewDomainDAO(ent)
 
 	if err := d.db.WithContext(ctx).Create(&row).Error; err != nil {
-		return nil, err
+		return domain.Entity{}, err
 	}
 
 	return row.ToEntity(), nil
@@ -45,7 +45,7 @@ func (d *Domain) Update(ctx context.Context, ent domain.Entity) (domain.Entity, 
 	row := mapper.NewDomainDAO(ent)
 
 	if err := d.db.WithContext(ctx).Save(&row).Error; err != nil {
-		return nil, err
+		return domain.Entity{}, err
 	}
 
 	return row.ToEntity(), nil
@@ -58,7 +58,7 @@ func (d *Domain) Delete(ctx context.Context, ent domain.Entity) (domain.Entity, 
 	row := mapper.NewDomainDAO(ent)
 
 	if err := d.db.WithContext(ctx).Delete(&row).Error; err != nil {
-		return nil, err
+		return domain.Entity{}, err
 	}
 
 	return row.ToEntity(), nil
@@ -72,11 +72,11 @@ func (d *Domain) GetOne(ctx context.Context, q domain.Query) (domain.Entity, err
 
 	ents, err := d.GetList(ctx, q)
 	if err != nil {
-		return nil, err
+		return domain.Entity{}, err
 	}
 
 	if len(ents) == 0 {
-		return nil, domain.ErrNotFound
+		return domain.Entity{}, domain.ErrNotFound
 	}
 
 	return ents[0], nil

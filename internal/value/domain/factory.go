@@ -3,18 +3,13 @@ package domain
 import "github.com/google/uuid"
 
 func NewEntity() Entity {
-	return &entityState{
+	return Entity{
 		id: uuid.NewString(),
 	}
 }
 
 func NewEntityClone(ent Entity) Entity {
-	return &entityState{
-		id:       ent.ID(),
-		name:     ent.Name(),
-		email:    ent.Email(),
-		password: ent.Password(),
-	}
+	return ent
 }
 
 func NewEntityWithData(
@@ -23,7 +18,7 @@ func NewEntityWithData(
 	email string,
 	password string,
 ) Entity {
-	return &entityState{
+	return Entity{
 		id:       id,
 		name:     name,
 		email:    email,
@@ -35,7 +30,7 @@ func NewStat(
 	name string,
 	count int,
 ) Stat {
-	return &statState{
+	return Stat{
 		name:  name,
 		count: count,
 	}

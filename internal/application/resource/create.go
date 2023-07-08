@@ -14,24 +14,24 @@ func (s *Service) Create(ctx context.Context, patch domain.Patch, user user.Iden
 	ent := domain.NewEntity()
 
 	if err := ent.Patch(patch); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidEntity)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidEntity)
 	}
 
 	if err := ent.Validate(); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidEntity)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidEntity)
 	}
 
 	if err := s.authorizeCreate(user, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	ent, err := s.repo.Create(ctx, ent)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	if err := s.event.Created(ctx, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	return ent, nil

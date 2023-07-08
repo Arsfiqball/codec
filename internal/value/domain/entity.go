@@ -5,39 +5,30 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 
-type Entity interface {
-	ID() string
-	Name() string
-	Email() string
-	Password() string
-	Patch(Patch) error
-	Validate() error
-}
-
-type entityState struct {
+type Entity struct {
 	id       string
 	name     string
 	email    string
 	password string
 }
 
-func (e entityState) ID() string {
+func (e Entity) ID() string {
 	return e.id
 }
 
-func (e entityState) Name() string {
+func (e Entity) Name() string {
 	return e.name
 }
 
-func (e entityState) Email() string {
+func (e Entity) Email() string {
 	return e.email
 }
 
-func (e entityState) Password() string {
+func (e Entity) Password() string {
 	return e.password
 }
 
-func (e *entityState) Patch(p Patch) error {
+func (e *Entity) Patch(p Patch) error {
 	if p.Name.Valid() {
 		e.name = p.Name.Value()
 	}
@@ -53,7 +44,7 @@ func (e *entityState) Patch(p Patch) error {
 	return nil
 }
 
-func (e entityState) Validate() error {
+func (e Entity) Validate() error {
 	errs := validation.Errors{
 		"id":       validation.Validate(e.id, validation.Required, is.UUIDv4),
 		"name":     validation.Validate(e.name, validation.Required),
@@ -62,4 +53,8 @@ func (e entityState) Validate() error {
 	}
 
 	return errs.Filter()
+}
+
+func (e *Entity) ResetPassword() {
+	e.password = ""
 }

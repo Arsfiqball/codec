@@ -12,35 +12,35 @@ func (s *Service) Update(ctx context.Context, query domain.Query, patch domain.P
 	defer span.End()
 
 	if err := query.Validate(); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidQuery)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidQuery)
 	}
 
 	old, err := s.repo.GetOne(ctx, query)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	ent := domain.NewEntityClone(old)
 
 	if err := ent.Patch(patch); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidEntity)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidEntity)
 	}
 
 	if err := ent.Validate(); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidEntity)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidEntity)
 	}
 
 	if err := s.authorizeUpdate(user, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	ent, err = s.repo.Update(ctx, ent)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	if err := s.event.Updated(ctx, old, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	return ent, nil

@@ -11,16 +11,16 @@ func (s *Service) GetOne(ctx context.Context, query domain.Query, user user.Iden
 	defer span.End()
 
 	if err := query.Validate(); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidQuery)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidQuery)
 	}
 
 	ent, err := s.repo.GetOne(ctx, query)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	if err := s.authorizeGetOne(user, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	return ent, nil

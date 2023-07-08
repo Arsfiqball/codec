@@ -1,19 +1,14 @@
 package domain
 
-type Stat interface {
-	Name() string
-	Count() int
-}
-
-type statState struct {
+type Stat struct {
 	name  string
 	count int
 }
 
-func (s statState) Name() string {
+func (s Stat) Name() string {
 	return s.name
 }
 
-func (s statState) Count() int {
+func (s Stat) Count() int {
 	return s.count
 }

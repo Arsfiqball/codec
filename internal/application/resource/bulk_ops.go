@@ -50,7 +50,7 @@ func (s *Service) BulkOps(ctx context.Context, ops []Ops, user user.Identity) ([
 		default:
 			results = append(results, OpsResult{
 				Type:   op.Type,
-				Entity: nil,
+				Entity: domain.Entity{},
 				Error:  NewError(nil, "invalid operation type", ErrCodeInvalidOpsType),
 			})
 		}

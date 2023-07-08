@@ -12,25 +12,25 @@ func (s *Service) Delete(ctx context.Context, query domain.Query, user user.Iden
 	defer span.End()
 
 	if err := query.Validate(); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeInvalidQuery)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeInvalidQuery)
 	}
 
 	ent, err := s.repo.GetOne(ctx, query)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	if err := s.authorizeDelete(user, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnauthorized)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnauthorized)
 	}
 
 	ent, err = s.repo.Delete(ctx, ent)
 	if err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	if err := s.event.Deleted(ctx, ent); err != nil {
-		return nil, NewError(err, err.Error(), ErrCodeUnknown)
+		return domain.Entity{}, NewError(err, err.Error(), ErrCodeUnknown)
 	}
 
 	return ent, nil

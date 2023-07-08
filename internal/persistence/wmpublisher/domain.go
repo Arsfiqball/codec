@@ -30,7 +30,7 @@ func (d *Domain) Created(ctx context.Context, ent domain.Entity) error {
 	_, span := d.tracer.Start(ctx, "feature/internal/persistence/wmpublisher/domain/Created")
 	defer span.End()
 
-	data, err := json.Marshal(domainDTO(ent))
+	data, err := json.Marshal(domainEntityToDTO(ent))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "failed to marshal domain entity")
@@ -48,11 +48,11 @@ func (d *Domain) Updated(ctx context.Context, oldEnt domain.Entity, newEnt domai
 	defer span.End()
 
 	data, err := json.Marshal(struct {
-		Old dto `json:"old"`
-		New dto `json:"new"`
+		Old domainDTO `json:"old"`
+		New domainDTO `json:"new"`
 	}{
-		Old: domainDTO(oldEnt),
-		New: domainDTO(newEnt),
+		Old: domainEntityToDTO(oldEnt),
+		New: domainEntityToDTO(newEnt),
 	})
 
 	if err != nil {
@@ -71,7 +71,7 @@ func (d *Domain) Deleted(ctx context.Context, ent domain.Entity) error {
 	_, span := d.tracer.Start(ctx, "feature/internal/persistence/wmpublisher/domain/Deleted")
 	defer span.End()
 
-	data, err := json.Marshal(domainDTO(ent))
+	data, err := json.Marshal(domainEntityToDTO(ent))
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "failed to marshal domain entity")
@@ -84,15 +84,15 @@ func (d *Domain) Deleted(ctx context.Context, ent domain.Entity) error {
 	return d.pub.Publish("domain_deleted", msg)
 }
 
-type dto struct {
+type domainDTO struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func domainDTO(ent domain.Entity) dto {
-	return dto{
+func domainEntityToDTO(ent domain.Entity) domainDTO {
+	return domainDTO{
 		ID:       ent.ID(),
 		Name:     ent.Name(),
 		Email:    ent.Email(),

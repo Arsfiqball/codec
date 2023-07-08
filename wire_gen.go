@@ -8,11 +8,24 @@ package featurepkg
 
 import (
 	"context"
+	"feature/internal/application/resource"
+	"feature/internal/persistence/gormrepo"
+	"feature/internal/persistence/wmpublisher"
+	"feature/internal/protocol/fiberhandler"
 )
 
 // Injectors from wire.go:
 
 func New(ctx context.Context, cfg Config) (*FeatureName, error) {
-	featureName := &FeatureName{}
+	tracer := cfg.Tracer
+	db := cfg.Database
+	domain := gormrepo.NewDomain(tracer, db)
+	publisher := cfg.Publisher
+	wmpublisherDomain := wmpublisher.NewDomain(tracer, publisher)
+	service := resource.NewService(tracer, domain, wmpublisherDomain)
+	fiberhandlerResource := fiberhandler.NewResource(tracer, service)
+	featureName := &FeatureName{
+		resourceHandler: fiberhandlerResource,
+	}
 	return featureName, nil
 }

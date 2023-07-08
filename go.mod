@@ -8,6 +8,7 @@ require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gofiber/fiber/v2 v2.43.0
 	github.com/google/uuid v1.3.0
+	go.opentelemetry.io/otel v1.14.0
 	gorm.io/gorm v1.25.2
 )
 
@@ -18,7 +19,6 @@ require (
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	go.opentelemetry.io/otel v1.14.0 // indirect
 )
 
 require (

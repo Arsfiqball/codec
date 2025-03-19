@@ -1,4 +1,4 @@
-package content
+package devotee
 
 import (
 	"context"

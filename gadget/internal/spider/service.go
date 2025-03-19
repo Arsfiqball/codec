@@ -1,4 +1,4 @@
-package job
+package spider
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	ProcessSomething(context.Context, ProcessSomethingInput) (ProcessSomethingOutput, error)
+	OnSomething(context.Context, OnSomethingInput) (OnSomethingOutput, error)
 }
 
 var _ Service = (*service)(nil)

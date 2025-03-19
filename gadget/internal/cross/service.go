@@ -1,4 +1,4 @@
-package listener
+package cross
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	OnSomething(context.Context, OnSomethingInput) (OnSomethingOutput, error)
+	ProcessSomething(context.Context, ProcessSomethingInput) (ProcessSomethingOutput, error)
 }
 
 var _ Service = (*service)(nil)

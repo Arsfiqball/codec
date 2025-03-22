@@ -32,6 +32,26 @@ func New(code string) Error {
 	}
 }
 
+type unwrapper interface {
+	Unwrap() error
+}
+
+func (e Error) From(err error) (Error, bool) {
+	if err == nil {
+		return e, false
+	}
+
+	if target, ok := err.(Error); ok && target.code == e.code {
+		return target, true
+	}
+
+	if target, ok := err.(unwrapper); ok {
+		return e.From(target.Unwrap())
+	}
+
+	return e, false
+}
+
 func (e Error) Code() string {
 	return e.code
 }
@@ -157,7 +177,15 @@ type Unpacked struct {
 	Data Data   `json:"data"`
 }
 
+func (u Unpacked) IsEmpty() bool {
+	return u.Code == "" && u.Info == "" && u.Data.IsEmpty()
+}
+
 func Unpack(err error) Unpacked {
+	if err == nil {
+		return Unpacked{}
+	}
+
 	var code string
 	var info string
 	var data Data

@@ -4,10 +4,6 @@ import (
 	"fmt"
 )
 
-type unwrapper interface {
-	Unwrap() error
-}
-
 func StackFrom(err error, depth int) string {
 	var stack string
 

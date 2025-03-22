@@ -5,9 +5,9 @@ import (
 	"runtime"
 )
 
-const PanicCode = "panic"
+const CodePanic = "panic"
 
-var Panic = New(PanicCode)
+var Panic = New(CodePanic)
 
 func RecoverAs(out *Error, depth int) {
 	if out == nil {
@@ -33,7 +33,7 @@ func RecoverAs(out *Error, depth int) {
 			}
 
 			childErr := Error{
-				code:   PanicCode,
+				code:   CodePanic,
 				info:   fmt.Sprintf("stack %d: %s", i-skip, name),
 				caller: fmt.Sprintf("%s:%d", file, line),
 				parent: err,

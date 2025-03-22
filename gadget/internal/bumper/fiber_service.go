@@ -1,9 +1,10 @@
 package bumper
 
 import (
-	"context"
 	"errors"
+	"feature/widget/flame"
 
+	"github.com/gofiber/fiber/v2"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -27,11 +28,28 @@ func NewFiberService(tracer trace.Tracer, service Service) (*FiberService, error
 	}, nil
 }
 
-func (s *FiberService) ScheduleSomething(ctx context.Context, input ScheduleSomethingInput) (ScheduleSomethingOutput, error) {
-	ctx, span := s.tracer.Start(ctx, "gadget/internal/scheduler.FiberService.ScheduleSomething") // Don't forget to change the span name
+func (s *FiberService) ScheduleSomething(c *fiber.Ctx) error {
+	ctx, span := s.tracer.Start(c.UserContext(), "gadget/internal/bumper.FiberService.ScheduleSomething")
 	defer span.End()
 
-	// TODO: Implement your business logic here
+	var input ScheduleSomething
 
-	return ScheduleSomethingOutput{}, nil
+	if err := c.ParamsParser(&input.Params); err != nil {
+		return flame.BadRequest.Wrap(err).WithInfo("failed to parse params")
+	}
+
+	if err := c.QueryParser(&input.Query); err != nil {
+		return flame.BadRequest.Wrap(err).WithInfo("failed to parse query")
+	}
+
+	if err := c.BodyParser(&input.Body); err != nil {
+		return flame.BadRequest.Wrap(err).WithInfo("failed to parse body")
+	}
+
+	output, err := s.service.ScheduleSomething(ctx, input)
+	if err != nil {
+		return flame.Unexpected(err)
+	}
+
+	return c.JSON(output)
 }

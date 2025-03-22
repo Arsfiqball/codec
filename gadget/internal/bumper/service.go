@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	ScheduleSomething(context.Context, ScheduleSomethingInput) (ScheduleSomethingOutput, error)
+	ScheduleSomething(context.Context, ScheduleSomething) (Something, error)
 }
 
 var _ Service = (*service)(nil)

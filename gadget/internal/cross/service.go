@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	ProcessSomething(context.Context, ProcessSomethingInput) (ProcessSomethingOutput, error)
+	ProcessSomething(context.Context, ProcessSomething) (Something, error)
 }
 
 var _ Service = (*service)(nil)

@@ -1,20 +1,38 @@
 package cross
 
-import "context"
+import (
+	"context"
+	"time"
 
-type ProcessSomethingInput struct {
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
+)
+
+type ProcessSomething struct {
+	ID string `json:"id"`
+
 	// TODO: Add your input fields here
 }
 
-type ProcessSomethingOutput struct {
+func (p ProcessSomething) Kind() string {
+	return "gadget_process_something"
+}
+
+type Something struct {
+	CompletedAt time.Time
+
 	// TODO: Add your output fields here
 }
 
-func (s *service) ProcessSomething(ctx context.Context, input ProcessSomethingInput) (ProcessSomethingOutput, error) {
-	ctx, span := s.tracer.Start(ctx, "gadget/internal/job.Service.ProcessSomething")
+func (s *service) ProcessSomething(ctx context.Context, input ProcessSomething) (Something, error) {
+	attrs := trace.WithAttributes(attribute.String("id", input.ID))
+
+	_, span := s.tracer.Start(ctx, "gadget/internal/job.Service.ProcessSomething", attrs)
 	defer span.End()
 
 	// TODO: Implement your business logic here
 
-	return ProcessSomethingOutput{}, nil
+	return Something{
+		CompletedAt: time.Now(),
+	}, nil
 }

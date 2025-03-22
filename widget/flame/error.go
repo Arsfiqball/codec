@@ -89,6 +89,12 @@ func (e Error) WithData(data Data) Error {
 }
 
 func (e Error) Data() Data {
+	if e.parent != nil {
+		if pe, ok := e.parent.(Error); ok {
+			e.data = e.data.Merge(pe.Data())
+		}
+	}
+
 	return e.data
 }
 
@@ -114,6 +120,14 @@ func (e Error) Is(target error) bool {
 	return false
 }
 
+func (e Error) NilOnEmptyData() error {
+	if e.Data().RemoveNil().IsEmpty() {
+		return nil
+	}
+
+	return e
+}
+
 const CodeUnexpected = "unexpected"
 
 // Unexpected create "unexpected" which function as error forwarding.
@@ -133,6 +147,7 @@ func Unexpected(err error) Error {
 		info:   fmt.Sprintf("error with code %s", CodeUnexpected),
 		data:   Data{},
 		caller: caller,
+		parent: err,
 	}
 }
 

@@ -28,7 +28,7 @@ func someProxyFunc() {
 }
 
 func TestRecover(t *testing.T) {
-	t.Run("panic", func(t *testing.T) {
+	t.Run("Success recover as flame.Panic", func(t *testing.T) {
 		err := flame.Panic
 
 		func() {

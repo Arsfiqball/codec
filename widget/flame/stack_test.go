@@ -6,14 +6,12 @@ import (
 	"testing"
 )
 
-var (
-	errSample1 = flame.New("test 1")
-	errSample2 = flame.New("test 2")
-	errSample3 = flame.New("test 3")
-)
-
 func TestStackFrom(t *testing.T) {
-	t.Run("TestStackFrom", func(t *testing.T) {
+	errSample1 := flame.New("test 1")
+	errSample2 := flame.New("test 2")
+	errSample3 := flame.New("test 3")
+
+	t.Run("Success extracting stacks", func(t *testing.T) {
 		err := errors.New("sentinel error")
 		err1 := errSample1.Wrap(err)
 		err2 := errSample2.Wrap(err1)

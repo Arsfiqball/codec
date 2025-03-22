@@ -19,3 +19,22 @@ func (d Data) Merge(other Data) Data {
 
 	return d
 }
+
+func (d Data) IsEmpty() bool {
+	return len(d) == 0
+}
+
+func (d Data) With(key string, value interface{}) Data {
+	if _, ok := d[key]; ok && value == nil {
+		delete(d, key) // Remove key if value is nil
+		return d
+	}
+
+	if value == nil {
+		return d // Do nothing if value is nil
+	}
+
+	d[key] = value // Set key to value
+
+	return d
+}

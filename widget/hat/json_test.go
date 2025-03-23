@@ -74,7 +74,7 @@ func TestJSON(t *testing.T) {
 			t.Fatalf("unexpected result: %+v", example)
 		}
 
-		if !example.Attr1.IsPresent() || example.Attr1.IsNull() || example.Attr1.Value() != "value" {
+		if !example.Attr1.IsPresent() || example.Attr1.IsNull() || example.Attr1.Get() != "value" {
 			t.Fatalf("unexpected result: %+v", example)
 		}
 
@@ -82,7 +82,7 @@ func TestJSON(t *testing.T) {
 			t.Fatalf("unexpected result: %+v", example)
 		}
 
-		if !example.Attr2.Value().Child.IsPresent() || example.Attr2.Value().Child.IsNull() || example.Attr2.Value().Child.Value() != "child" {
+		if !example.Attr2.Get().Child.IsPresent() || example.Attr2.Get().Child.IsNull() || example.Attr2.Get().Child.Get() != "child" {
 			t.Fatalf("unexpected result: %+v", example)
 		}
 

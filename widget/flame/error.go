@@ -75,6 +75,20 @@ func (e Error) Here() Error {
 	return e
 }
 
+func (e Error) HereBefore(skip int) Error {
+	var caller string
+
+	_, file, line, ok := runtime.Caller(skip + 1)
+
+	if ok {
+		caller = fmt.Sprintf("%s:%d", file, line)
+	}
+
+	e.caller = caller
+
+	return e
+}
+
 // Wrap method that sets the parent field of the Error struct to the error passed in and returns the Error struct.
 // It also sets the caller field of the Error struct to the file and line number of the caller.
 func (e Error) Wrap(err error) Error {

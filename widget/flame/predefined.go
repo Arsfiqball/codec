@@ -13,16 +13,52 @@ const (
 )
 
 var (
-	BadRequest      = New(CodeBadRequest)
-	Unauthorized    = New(CodeUnauthorized)
-	Forbidden       = New(CodeForbidden)
-	NotFound        = New(CodeNotFound)
-	Conflict        = New(CodeConflict)
-	RequestTooLarge = New(CodeRequestTooLarge)
-	Unprocessable   = New(CodeUnprocessable)
-	Locked          = New(CodeLocked)
-	TooManyRequests = New(CodeTooManyRequests)
+	badRequest      = New(CodeBadRequest)
+	unauthorized    = New(CodeUnauthorized)
+	forbidden       = New(CodeForbidden)
+	notFound        = New(CodeNotFound)
+	conflict        = New(CodeConflict)
+	requestTooLarge = New(CodeRequestTooLarge)
+	unprocessable   = New(CodeUnprocessable)
+	locked          = New(CodeLocked)
+	tooManyRequests = New(CodeTooManyRequests)
 )
+
+func BadRequest() Error {
+	return badRequest.HereBefore(1)
+}
+
+func Unauthorized() Error {
+	return unauthorized.HereBefore(1)
+}
+
+func Forbidden() Error {
+	return forbidden.HereBefore(1)
+}
+
+func NotFound() Error {
+	return notFound.HereBefore(1)
+}
+
+func Conflict() Error {
+	return conflict.HereBefore(1)
+}
+
+func RequestTooLarge() Error {
+	return requestTooLarge.HereBefore(1)
+}
+
+func Unprocessable() Error {
+	return unprocessable.HereBefore(1)
+}
+
+func Locked() Error {
+	return locked.HereBefore(1)
+}
+
+func TooManyRequests() Error {
+	return tooManyRequests.HereBefore(1)
+}
 
 type HttpUnpacked struct {
 	Code    int    `json:"code"`

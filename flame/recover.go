@@ -7,15 +7,10 @@ import (
 
 const CodePanic = "panic"
 
-func RecoverAs(out *Error, depth int) {
-	if out == nil {
-		return
-	}
-
+func RecoverAs(out *error, depth int) {
 	const skip = 2
 	if r := recover(); r != nil {
-		err := *out // Copy the original flame error
-		err.info = fmt.Sprintf("%v", r)
+		var err error
 
 		for i := skip; i < depth; i++ {
 			pc, file, line, ok := runtime.Caller(i)

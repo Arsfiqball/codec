@@ -7,8 +7,6 @@ import (
 
 const CodePanic = "panic"
 
-var Panic = New(CodePanic)
-
 func RecoverAs(out *Error, depth int) {
 	if out == nil {
 		return

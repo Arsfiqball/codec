@@ -30,7 +30,7 @@ func someProxyFunc() {
 
 func TestRecover(t *testing.T) {
 	t.Run("Success recover as flame.Panic", func(t *testing.T) {
-		err := flame.Panic
+		err := flame.New(flame.CodePanic)
 
 		func() {
 			defer flame.RecoverAs(&err, 10)

@@ -2,8 +2,9 @@ package parser
 
 import (
 	"errors"
-	"feature/internal/value/user"
 	"strings"
+
+	"github.com/Arsfiqball/codec/internal/value/user"
 )
 
 func UserIdentityToken(token string, ent *user.Identity) error {

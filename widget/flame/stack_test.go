@@ -2,8 +2,9 @@ package flame_test
 
 import (
 	"errors"
-	"feature/widget/flame"
 	"testing"
+
+	"github.com/Arsfiqball/codec/widget/flame"
 )
 
 func TestStackFrom(t *testing.T) {

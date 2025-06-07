@@ -1,8 +1,9 @@
 package flame_test
 
 import (
-	"feature/widget/flame"
 	"testing"
+
+	"github.com/Arsfiqball/codec/widget/flame"
 )
 
 func funcThatPanics() {

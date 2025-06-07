@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Arsfiqball/talkback-lancer"
+	"github.com/Arsfiqball/talkback"
 )
 
 type Query struct {

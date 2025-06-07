@@ -2,11 +2,12 @@ package parser
 
 import (
 	"encoding/json"
-	"feature/internal/application/resource"
-	"feature/internal/value/domain"
 	"net/url"
 
-	"github.com/Arsfiqball/talkback-lancer"
+	"github.com/Arsfiqball/codec/internal/application/resource"
+	"github.com/Arsfiqball/codec/internal/value/domain"
+
+	"github.com/Arsfiqball/talkback"
 )
 
 type DomainPatchDTO struct {

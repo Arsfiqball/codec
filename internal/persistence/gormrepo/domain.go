@@ -2,10 +2,11 @@ package gormrepo
 
 import (
 	"context"
-	"feature/internal/persistence/gormrepo/mapper"
-	"feature/internal/value/domain"
 
-	"github.com/Arsfiqball/talkback-lancer"
+	"github.com/Arsfiqball/codec/internal/persistence/gormrepo/mapper"
+	"github.com/Arsfiqball/codec/internal/value/domain"
+
+	"github.com/Arsfiqball/talkback"
 	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
 )
@@ -26,7 +27,7 @@ func NewDomain(
 }
 
 func (d *Domain) Create(ctx context.Context, ent domain.Entity) (domain.Entity, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/Create")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/Create")
 	defer span.End()
 
 	row := mapper.NewDomainDAO(ent)
@@ -39,7 +40,7 @@ func (d *Domain) Create(ctx context.Context, ent domain.Entity) (domain.Entity, 
 }
 
 func (d *Domain) Update(ctx context.Context, ent domain.Entity) (domain.Entity, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/Update")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/Update")
 	defer span.End()
 
 	row := mapper.NewDomainDAO(ent)
@@ -52,7 +53,7 @@ func (d *Domain) Update(ctx context.Context, ent domain.Entity) (domain.Entity, 
 }
 
 func (d *Domain) Delete(ctx context.Context, ent domain.Entity) (domain.Entity, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/Delete")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/Delete")
 	defer span.End()
 
 	row := mapper.NewDomainDAO(ent)
@@ -65,7 +66,7 @@ func (d *Domain) Delete(ctx context.Context, ent domain.Entity) (domain.Entity, 
 }
 
 func (d *Domain) GetOne(ctx context.Context, q domain.Query) (domain.Entity, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/GetOne")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/GetOne")
 	defer span.End()
 
 	q.Limit = 1
@@ -83,7 +84,7 @@ func (d *Domain) GetOne(ctx context.Context, q domain.Query) (domain.Entity, err
 }
 
 func (d *Domain) GetList(ctx context.Context, q domain.Query) ([]domain.Entity, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/GetList")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/GetList")
 	defer span.End()
 
 	var (
@@ -139,7 +140,7 @@ func (d *Domain) GetList(ctx context.Context, q domain.Query) ([]domain.Entity, 
 }
 
 func (d *Domain) GetStat(ctx context.Context, query domain.Query) ([]domain.Stat, error) {
-	ctx, span := d.tracer.Start(ctx, "feature/internal/persistence/gormrepo/domain/GetStat")
+	ctx, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/gormrepo/domain/GetStat")
 	defer span.End()
 
 	var (

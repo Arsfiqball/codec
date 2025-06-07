@@ -3,7 +3,8 @@ package wmpublisher
 import (
 	"context"
 	"encoding/json"
-	"feature/internal/value/domain"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
 
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/google/uuid"
@@ -27,7 +28,7 @@ func NewDomain(
 }
 
 func (d *Domain) Created(ctx context.Context, ent domain.Entity) error {
-	_, span := d.tracer.Start(ctx, "feature/internal/persistence/wmpublisher/domain/Created")
+	_, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/wmpublisher/domain/Created")
 	defer span.End()
 
 	data, err := json.Marshal(domainEntityToDTO(ent))
@@ -44,7 +45,7 @@ func (d *Domain) Created(ctx context.Context, ent domain.Entity) error {
 }
 
 func (d *Domain) Updated(ctx context.Context, oldEnt domain.Entity, newEnt domain.Entity) error {
-	_, span := d.tracer.Start(ctx, "feature/internal/persistence/wmpublisher/domain/Updated")
+	_, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/wmpublisher/domain/Updated")
 	defer span.End()
 
 	data, err := json.Marshal(struct {
@@ -68,7 +69,7 @@ func (d *Domain) Updated(ctx context.Context, oldEnt domain.Entity, newEnt domai
 }
 
 func (d *Domain) Deleted(ctx context.Context, ent domain.Entity) error {
-	_, span := d.tracer.Start(ctx, "feature/internal/persistence/wmpublisher/domain/Deleted")
+	_, span := d.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/persistence/wmpublisher/domain/Deleted")
 	defer span.End()
 
 	data, err := json.Marshal(domainEntityToDTO(ent))

@@ -2,7 +2,8 @@ package fiberhandler
 
 import (
 	"errors"
-	"feature/internal/application/resource"
+
+	"github.com/Arsfiqball/codec/internal/application/resource"
 
 	"github.com/gofiber/fiber/v2"
 )

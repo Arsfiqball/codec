@@ -1,8 +1,9 @@
 package hat_test
 
 import (
-	"feature/widget/hat"
 	"testing"
+
+	"github.com/Arsfiqball/codec/widget/hat"
 )
 
 func TestProtect(t *testing.T) {

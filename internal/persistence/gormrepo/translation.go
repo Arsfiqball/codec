@@ -1,9 +1,9 @@
 package gormrepo
 
 import (
-	"feature/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/domain"
 
-	"github.com/Arsfiqball/talkback-lancer"
+	"github.com/Arsfiqball/talkback"
 )
 
 var domainTranslations = talkback.SqlTranslations{

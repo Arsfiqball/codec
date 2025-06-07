@@ -3,7 +3,8 @@ package cross
 import (
 	"context"
 	"errors"
-	"feature/widget/flame"
+
+	"github.com/Arsfiqball/codec/widget/flame"
 
 	"github.com/gocraft/work"
 	"go.opentelemetry.io/otel/attribute"

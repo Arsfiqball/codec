@@ -1,11 +1,11 @@
 package fiberhandler
 
 import (
-	"feature/internal/application/resource"
-	"feature/internal/protocol/fiberhandler/formatter"
-	"feature/internal/protocol/fiberhandler/parser"
-	"feature/internal/value/domain"
-	"feature/internal/value/user"
+	"github.com/Arsfiqball/codec/internal/application/resource"
+	"github.com/Arsfiqball/codec/internal/protocol/fiberhandler/formatter"
+	"github.com/Arsfiqball/codec/internal/protocol/fiberhandler/parser"
+	"github.com/Arsfiqball/codec/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/user"
 
 	"github.com/gofiber/fiber/v2"
 	"go.opentelemetry.io/otel/trace"
@@ -24,7 +24,7 @@ func NewResource(tracer trace.Tracer, svc resource.IService) *Resource {
 }
 
 func (r *Resource) Create(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/Create")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/Create")
 	defer span.End()
 
 	var (
@@ -49,7 +49,7 @@ func (r *Resource) Create(c *fiber.Ctx) error {
 }
 
 func (r *Resource) Update(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/Update")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/Update")
 	defer span.End()
 
 	var (
@@ -79,7 +79,7 @@ func (r *Resource) Update(c *fiber.Ctx) error {
 }
 
 func (r *Resource) Delete(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/Delete")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/Delete")
 	defer span.End()
 
 	var (
@@ -104,7 +104,7 @@ func (r *Resource) Delete(c *fiber.Ctx) error {
 }
 
 func (r *Resource) GetOne(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/GetOne")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/GetOne")
 	defer span.End()
 
 	var (
@@ -129,7 +129,7 @@ func (r *Resource) GetOne(c *fiber.Ctx) error {
 }
 
 func (r *Resource) GetList(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/GetList")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/GetList")
 	defer span.End()
 
 	var (
@@ -160,7 +160,7 @@ func (r *Resource) GetList(c *fiber.Ctx) error {
 }
 
 func (r *Resource) GetStat(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/GetStat")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/GetStat")
 	defer span.End()
 
 	var (
@@ -191,7 +191,7 @@ func (r *Resource) GetStat(c *fiber.Ctx) error {
 }
 
 func (r *Resource) BulkOps(c *fiber.Ctx) error {
-	ctx, span := r.tracer.Start(c.UserContext(), "feature/internal/protocol/fiberhandler/resource/BulkOps")
+	ctx, span := r.tracer.Start(c.UserContext(), "github.com/Arsfiqball/codec/internal/protocol/fiberhandler/resource/BulkOps")
 	defer span.End()
 
 	var (

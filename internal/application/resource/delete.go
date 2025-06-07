@@ -3,12 +3,13 @@ package resource
 import (
 	"context"
 	"errors"
-	"feature/internal/value/domain"
-	"feature/internal/value/user"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/user"
 )
 
 func (s *Service) Delete(ctx context.Context, query domain.Query, user user.Identity) (domain.Entity, error) {
-	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.Delete")
+	ctx, span := s.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/application/resource.Service.Delete")
 	defer span.End()
 
 	if err := query.Validate(); err != nil {

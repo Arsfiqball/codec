@@ -2,12 +2,13 @@ package job
 
 import (
 	"context"
-	"feature/internal/value/domain"
 	"time"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
 )
 
 func (s *Service) ResetEverybodyPassword(ctx context.Context, before time.Time) error {
-	ctx, span := s.tracer.Start(ctx, "feature/internal/application/job.Service.ResetEverybodyPassword")
+	ctx, span := s.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/application/job.Service.ResetEverybodyPassword")
 	defer span.End()
 
 	query := domain.Query{}

@@ -1,7 +1,7 @@
 package fiberhandler
 
 import (
-	"feature/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/domain"
 
 	"github.com/gofiber/fiber/v2"
 )

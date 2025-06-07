@@ -1,6 +1,6 @@
 package mapper
 
-import "feature/internal/value/domain"
+import "github.com/Arsfiqball/codec/internal/value/domain"
 
 type DomainDAO struct {
 	ID       string `gorm:"column:id,primaryKey"`

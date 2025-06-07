@@ -2,8 +2,9 @@ package resource
 
 import (
 	"context"
-	"feature/internal/value/domain"
-	"feature/internal/value/user"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/user"
 )
 
 type Ops struct {
@@ -19,7 +20,7 @@ type OpsResult struct {
 }
 
 func (s *Service) BulkOps(ctx context.Context, ops []Ops, user user.Identity) ([]OpsResult, error) {
-	ctx, span := s.tracer.Start(ctx, "feature/internal/application/resource.Service.BulkOps")
+	ctx, span := s.tracer.Start(ctx, "github.com/Arsfiqball/codec/internal/application/resource.Service.BulkOps")
 	defer span.End()
 
 	var results []OpsResult

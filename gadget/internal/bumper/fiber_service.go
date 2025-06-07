@@ -2,7 +2,8 @@ package bumper
 
 import (
 	"errors"
-	"feature/widget/flame"
+
+	"github.com/Arsfiqball/codec/widget/flame"
 
 	"github.com/gofiber/fiber/v2"
 	"go.opentelemetry.io/otel/trace"
@@ -35,15 +36,15 @@ func (s *FiberService) ScheduleSomething(c *fiber.Ctx) error {
 	var input ScheduleSomething
 
 	if err := c.ParamsParser(&input.Params); err != nil {
-		return flame.BadRequest.Wrap(err).WithInfo("failed to parse params")
+		return flame.BadRequest().Wrap(err).WithInfo("failed to parse params")
 	}
 
 	if err := c.QueryParser(&input.Query); err != nil {
-		return flame.BadRequest.Wrap(err).WithInfo("failed to parse query")
+		return flame.BadRequest().Wrap(err).WithInfo("failed to parse query")
 	}
 
 	if err := c.BodyParser(&input.Body); err != nil {
-		return flame.BadRequest.Wrap(err).WithInfo("failed to parse body")
+		return flame.BadRequest().Wrap(err).WithInfo("failed to parse body")
 	}
 
 	output, err := s.service.ScheduleSomething(ctx, input)

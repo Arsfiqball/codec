@@ -2,8 +2,9 @@ package job
 
 import (
 	"context"
-	"feature/internal/value/domain"
 	"time"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
 
 	"go.opentelemetry.io/otel/trace"
 )

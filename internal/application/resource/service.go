@@ -2,8 +2,9 @@ package resource
 
 import (
 	"context"
-	"feature/internal/value/domain"
-	"feature/internal/value/user"
+
+	"github.com/Arsfiqball/codec/internal/value/domain"
+	"github.com/Arsfiqball/codec/internal/value/user"
 
 	"go.opentelemetry.io/otel/trace"
 )

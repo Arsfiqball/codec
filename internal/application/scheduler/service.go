@@ -2,7 +2,8 @@ package scheduler
 
 import (
 	"context"
-	"feature/internal/value/queue"
+
+	"github.com/Arsfiqball/codec/internal/value/queue"
 
 	"go.opentelemetry.io/otel/trace"
 )

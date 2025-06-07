@@ -2,8 +2,9 @@ package hat_test
 
 import (
 	"encoding/json"
-	"feature/widget/hat"
 	"testing"
+
+	"github.com/Arsfiqball/codec/widget/hat"
 )
 
 func TestJSON(t *testing.T) {

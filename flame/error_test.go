@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Arsfiqball/codec/widget/flame"
+	"github.com/Arsfiqball/codec/flame"
 )
 
 func TestError(t *testing.T) {

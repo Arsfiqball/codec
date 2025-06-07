@@ -3,7 +3,7 @@ package flame_test
 import (
 	"testing"
 
-	"github.com/Arsfiqball/codec/widget/flame"
+	"github.com/Arsfiqball/codec/flame"
 )
 
 func funcThatPanics() {

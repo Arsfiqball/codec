@@ -3,7 +3,7 @@ package hat_test
 import (
 	"testing"
 
-	"github.com/Arsfiqball/codec/widget/hat"
+	"github.com/Arsfiqball/codec/hat"
 )
 
 func TestProtect(t *testing.T) {

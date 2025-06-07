@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Arsfiqball/codec/widget/hat"
+	"github.com/Arsfiqball/codec/hat"
 )
 
 func TestJSON(t *testing.T) {

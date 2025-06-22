@@ -1,0 +1,17 @@
+package {{ .DomainPkg }}
+
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
+
+//go:generate mockery --name Repo --inpackage --case snake
+type Repo interface {
+	Aggregate(context.Context, Query) ({{ .DomainType }}List, error)
+	AggregateStat(context.Context, Query) ({{ .DomainType }}StatList, error)
+	GetByID(context.Context, uuid.UUID) ({{ .DomainType }}, error)
+	Create(context.Context, {{ .DomainType }}) ({{ .DomainType }}, error)
+	Update(context.Context, {{ .DomainType }}) ({{ .DomainType }}, error)
+	Delete(context.Context, {{ .DomainType }}) error
+}

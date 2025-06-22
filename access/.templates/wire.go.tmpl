@@ -1,0 +1,15 @@
+//go:build wireinject
+// +build wireinject
+
+package {{ .FeaturePkg }}
+
+import (
+	"context"
+
+	"github.com/google/wire"
+)
+
+func New(ctx context.Context, cfg Config) (* {{ .FeatureType }} , error) {
+	wire.Build(RegisterSet)
+	return & {{ .FeatureType }} {}, nil
+}

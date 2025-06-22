@@ -1,0 +1,109 @@
+package {{ .DomainPkg }}
+
+import (
+	"context"
+
+	"github.com/Arsfiqball/codec/flame"
+	"go.opentelemetry.io/otel/trace"
+)
+
+type Service interface {
+	Aggregate(context.Context, Query) ({{ .DomainType }}List, error)
+	AggregateStat(context.Context, Query) ([]{{ .DomainType }}Stat, error)
+	GetByID(context.Context, uuid.UUID) ({{ .DomainType }}, error)
+	Create(ctx context.Context, ent {{ .DomainType }}) error
+	Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error
+	Delete(ctx context.Context, ent {{ .DomainType }}) error
+}
+
+type service struct {
+	tracer trace.Tracer
+	repo   Repo
+	event  Event
+}
+
+func NewService(
+	tracer trace.Tracer,
+	repo Repo,
+	event Event,
+) Service {
+	return &service{
+		tracer: tracer,
+		repo:   repo,
+		event:  event,
+	}
+}
+
+func (s *service) Aggregate(ctx context.Context, query Query) ({{ .DomainType }}List, error) {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Aggregate")
+	defer span.End()
+
+	return s.repo.Aggregate(ctx, query)
+}
+
+func (s *service) AggregateStat(ctx context.Context, query Query) ({{ .DomainType }}StatList, error) {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.AggregateStat")
+	defer span.End()
+
+	return s.repo.AggregateStat(ctx, query)
+}
+
+func (s *service) GetByID(ctx context.Context, id uuid.UUID) ({{ .DomainType }}, error) {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.GetByID")
+	defer span.End()
+
+	return s.repo.GetByID(ctx, id)
+}
+
+func (s *service) Create(ctx context.Context, ent {{ .DomainType }}) error {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Create")
+	defer span.End()
+
+	if err := ent.Validate(); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	if err := s.repo.Create(ctx, ent); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	if err := s.event.Created(ctx, ent); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	return nil
+}
+
+func (s *service) Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Update")
+	defer span.End()
+
+	if err := toEnt.Validate(); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	if err := s.repo.Update(ctx, toEnt); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	if err := s.event.Updated(ctx, fromEnt, toEnt); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	return nil
+}
+
+func (s *service) Delete(ctx context.Context, ent {{ .DomainType }}) error {
+	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Delete")
+	defer span.End()
+
+	if err := s.repo.Delete(ctx, ent); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	if err := s.event.Deleted(ctx, ent); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	return nil
+}

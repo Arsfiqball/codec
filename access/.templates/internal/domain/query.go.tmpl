@@ -1,0 +1,56 @@
+package {{ .DomainPkg }}
+
+import (
+	"github.com/Arsfiqball/codec/flame"
+	"github.com/Arsfiqball/talkback"
+)
+
+// Query represents a query.
+type Query struct {
+	talkback.Query
+
+	Search string `json:"search,omitempty"`
+}
+
+// Valid returns true if the query is valid.
+func (q Query) Validate() error {
+	for _, condition := range q.Conditions {
+		if !condition.Valid() || !isQueryableField(condition.Field) {
+			return flame.BadRequest().WithInfo(condition.Field + " is not a valid queryable field")
+		}
+	}
+
+	for _, field := range q.Group {
+		if !isGroupableField(field) {
+			return flame.BadRequest().WithInfo(field + " is not a valid groupable field")
+		}
+	}
+
+	for _, field := range q.With {
+		if !isWithableField(field) {
+			return flame.BadRequest().WithInfo(field + " is not a valid withable field")
+		}
+	}
+
+	for _, field := range q.Sort {
+		if !isSortableField(field.Field) {
+			return flame.BadRequest().WithInfo(field.Field + " is not a valid sortable field")
+		}
+	}
+
+	for _, field := range q.Accumulator {
+		if !isAccumulableField(field) {
+			return flame.BadRequest().WithInfo(field + " is not a valid accumulable field")
+		}
+	}
+
+	if q.Skip < 0 {
+		return flame.BadRequest().WithInfo("skip cannot be negative")
+	}
+
+	if q.Limit < 0 {
+		return flame.BadRequest().WithInfo("limit cannot be negative")
+	}
+
+	return true
+}

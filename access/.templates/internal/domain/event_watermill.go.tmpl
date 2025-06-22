@@ -1,0 +1,92 @@
+package {{ .DomainPkg }}
+
+import (
+	"context"
+	"encoding/json"
+
+	"github.com/Arsfiqball/codec/flame"
+	"github.com/Arsfiqball/codec/widget/flame"
+	"github.com/ThreeDotsLabs/watermill/message"
+	"go.opentelemetry.io/otel/trace"
+)
+
+type eventWatermill struct {
+	tracer    trace.Tracer
+	publisher message.Publisher
+}
+
+func NewEventWatermill(pub message.Publisher, tc trace.Tracer) Event {
+	return &eventWatermill{
+		tracer:    tc,
+		publisher: pub,
+	}
+}
+
+func (e *eventWatermill) Created(ctx context.Context, ent {{ .DomainType }}) error {
+	ctx, span := e.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.eventWatermill.Created")
+	defer span.End()
+
+	event := model.{{ .DomainType }}Created{
+		ID:   ent.ID,
+		// Add other fields as necessary
+	}
+
+	if err := event.Validate(); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	b, err := json.Marshal(event)
+	if err != nil {
+		return flame.Unexpected(err)
+	}
+
+	msg := message.NewMessage(message.NewUUID(), b)
+
+	return e.publisher.Publish(event.EventType(), msg)
+}
+
+func (e *eventWatermill) Updated(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error {
+	ctx, span := e.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.eventWatermill.Updated")
+	defer span.End()
+
+	event := model.{{ .DomainType }}Updated{
+		ID:       toEnt.ID,
+		// Add other fields as necessary
+	}
+
+	if err := event.Validate(); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	b, err := json.Marshal(event)
+	if err != nil {
+		return flame.Unexpected(err)
+	}
+
+	msg := message.NewMessage(message.NewUUID(), b)
+
+	return e.publisher.Publish(event.EventType(), msg)
+}
+
+func (e *eventWatermill) Deleted(ctx context.Context, ent {{ .DomainType }}) error {
+	ctx, span := e.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.eventWatermill.Deleted")
+	defer span.End()
+
+	event := model.{{ .DomainType }}Deleted{
+		ID: ent.ID,
+		// Add other fields as necessary
+	}
+
+	if err := event.Validate(); err != nil {
+		return flame.Unexpected(err)
+	}
+
+	b, err := json.Marshal(event)
+	if err != nil {
+		return flame.Unexpected(err)
+	}
+
+	msg := message.NewMessage(message.NewUUID(), b)
+
+	return e.publisher.Publish(event.EventType(), msg)
+}

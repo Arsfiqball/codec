@@ -1,0 +1,24 @@
+package {{ .FeaturePkg }}
+
+import (
+	"github.com/google/wire"
+	"go.opentelemetry.io/otel/sdk/trace"
+	"gorm.io/gorm"
+)
+
+type Config struct {
+	Database *gorm.DB
+	Tracer   trace.Tracer
+}
+
+type {{ .FeatureType }} struct {
+}
+
+var RegisterSet = wire.NewSet(
+	wire.Struct(new( {{ .FeatureType }} ), "*"),
+	wire.FieldsOf(
+		new(Config),
+		"Database",
+		"Tracer",
+	),
+)

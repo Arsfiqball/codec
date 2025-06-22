@@ -16,19 +16,19 @@ type repoGorm struct {
 	db     *gorm.DB
 }
 
-func NewRepoGorm(db *gorm.DB, tc tracer.Tracer) Repo {
+func NewRepoGorm(db *gorm.DB, tc trace.Tracer) Repo {
 	return &repoGorm{
 		tracer: tc,
 		db:     db,
 	}
 }
 
-var repoTranslations = restql.SqlTranslations{
-	FieldID:              talkback.SqlFieldTranslation{Column: "id", TypeConverter: talkback.SqlConvertUUID},
+var repoTranslations = talkback.SqlTranslations{
+	FieldID:              talkback.SqlFieldTranslation{Column: "id", TypeConverter: talkback.SqlConvertString},
 	FieldAccumulateCount: talkback.SqlFieldTranslation{Column: "COUNT(*)", TypeConverter: talkback.SqlConvertInt},
 }
 
-var repoPreloadable = restql.SqlPreloadable{
+var repoPreloadable = talkback.SqlPreloadable{
 	// FieldWithSomething: "Something", // Uncomment and replace with actual fields if needed
 }
 
@@ -38,13 +38,13 @@ func (d *repoGorm) Aggregate(ctx context.Context, query Query) ({{ .DomainType }
 
 	var ents []{{ .DomainType }}
 
-	plan, err := talkback.ToSqlPlan(Query, repoTranslations, repoPreloadable)
+	plan, err := talkback.ToSqlPlan(query.Query, repoTranslations, repoPreloadable)
 	if err != nil {
 		return nil, flame.Unexpected(err)
 	}
 
 	// FROM
-	tx := r.db.WithContext(ctx).Model({{ .DomainType }} {})
+	tx := d.db.WithContext(ctx).Model({{ .DomainType }} {})
 
 	// WHERE
 	if plan.Where != "" {
@@ -98,7 +98,7 @@ func (d *repoGorm) AggregateStat(ctx context.Context, query Query) ({{ .DomainTy
 
 	var stats []{{ .DomainType }}Stat
 
-	plan, err := talkback.ToSqlPlan(Query, repoTranslations, repoPreloadable)
+	plan, err := talkback.ToSqlPlan(query.Query, repoTranslations, repoPreloadable)
 	if err != nil {
 		return nil, flame.Unexpected(err)
 	}
@@ -164,10 +164,10 @@ func (d *repoGorm) GetByID(ctx context.Context, id uuid.UUID) ({{ .DomainType }}
 
 	if err := d.db.WithContext(ctx).First(&ent, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, flame.NotFound()
+			return {{ .DomainType }} {}, flame.NotFound()
 		}
 
-		return nil, flame.Unexpected(err)
+		return {{ .DomainType }} {}, flame.Unexpected(err)
 	}
 
 	return ent, nil
@@ -178,11 +178,11 @@ func (d *repoGorm) Create(ctx context.Context, ent {{ .DomainType }}) ({{ .Domai
 	defer span.End()
 
 	if err := ent.{{ .DomainType }}.Validate(); err != nil {
-		return nil, flame.BadRequest().WithInfo(err.Error())
+		return {{ .DomainType }} {}, flame.BadRequest().WithInfo(err.Error())
 	}
 
 	if err := d.db.WithContext(ctx).Create(&ent.{{ .DomainType }}).Error; err != nil {
-		return nil, flame.Unexpected(err)
+		return {{ .DomainType }} {}, flame.Unexpected(err)
 	}
 
 	return ent, nil
@@ -193,11 +193,11 @@ func (d *repoGorm) Update(ctx context.Context, ent {{ .DomainType }}) ({{ .Domai
 	defer span.End()
 
 	if err := ent.{{ .DomainType }}.Validate(); err != nil {
-		return nil, flame.BadRequest().WithInfo(err.Error())
+		return {{ .DomainType }} {}, flame.BadRequest().WithInfo(err.Error())
 	}
 
 	if err := d.db.WithContext(ctx).Save(&ent.{{ .DomainType }}).Error; err != nil {
-		return nil, flame.Unexpected(err)
+		return {{ .DomainType }} {}, flame.Unexpected(err)
 	}
 
 	return ent, nil

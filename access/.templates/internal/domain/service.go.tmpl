@@ -4,15 +4,16 @@ import (
 	"context"
 
 	"github.com/Arsfiqball/codec/flame"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
 
 type Service interface {
 	Aggregate(context.Context, Query) ({{ .DomainType }}List, error)
-	AggregateStat(context.Context, Query) ([]{{ .DomainType }}Stat, error)
+	AggregateStat(context.Context, Query) ({{ .DomainType }}StatList, error)
 	GetByID(context.Context, uuid.UUID) ({{ .DomainType }}, error)
-	Create(ctx context.Context, ent {{ .DomainType }}) error
-	Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error
+	Create(ctx context.Context, ent {{ .DomainType }}) ({{ .DomainType }}, error)
+	Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) ({{ .DomainType }}, error)
 	Delete(ctx context.Context, ent {{ .DomainType }}) error
 }
 
@@ -55,42 +56,44 @@ func (s *service) GetByID(ctx context.Context, id uuid.UUID) ({{ .DomainType }},
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *service) Create(ctx context.Context, ent {{ .DomainType }}) error {
+func (s *service) Create(ctx context.Context, ent {{ .DomainType }}) ({{ .DomainType }}, error) {
 	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Create")
 	defer span.End()
 
 	if err := ent.Validate(); err != nil {
-		return flame.Unexpected(err)
+		return ent, flame.Unexpected(err)
 	}
 
-	if err := s.repo.Create(ctx, ent); err != nil {
-		return flame.Unexpected(err)
+	newEnt, err := s.repo.Create(ctx, ent)
+	if err != nil {
+		return ent, flame.Unexpected(err)
 	}
 
-	if err := s.event.Created(ctx, ent); err != nil {
-		return flame.Unexpected(err)
+	if err := s.event.Created(ctx, newEnt); err != nil {
+		return newEnt, flame.Unexpected(err)
 	}
 
-	return nil
+	return newEnt, nil
 }
 
-func (s *service) Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error {
+func (s *service) Update(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) ({{ .DomainType }}, error) {
 	ctx, span := s.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.service.Update")
 	defer span.End()
 
 	if err := toEnt.Validate(); err != nil {
-		return flame.Unexpected(err)
+		return toEnt, flame.Unexpected(err)
 	}
 
-	if err := s.repo.Update(ctx, toEnt); err != nil {
-		return flame.Unexpected(err)
+	newEnt, err := s.repo.Update(ctx, toEnt)
+	if err != nil {
+		return toEnt, flame.Unexpected(err)
 	}
 
-	if err := s.event.Updated(ctx, fromEnt, toEnt); err != nil {
-		return flame.Unexpected(err)
+	if err := s.event.Updated(ctx, fromEnt, newEnt); err != nil {
+		return newEnt, flame.Unexpected(err)
 	}
 
-	return nil
+	return newEnt, nil
 }
 
 func (s *service) Delete(ctx context.Context, ent {{ .DomainType }}) error {

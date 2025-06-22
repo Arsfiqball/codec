@@ -52,5 +52,5 @@ func (q Query) Validate() error {
 		return flame.BadRequest().WithInfo("limit cannot be negative")
 	}
 
-	return true
+	return nil
 }

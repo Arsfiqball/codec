@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/Arsfiqball/codec/flame"
-	"github.com/Arsfiqball/codec/widget/flame"
+	"github.com/google/uuid"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -40,7 +40,7 @@ func (e *eventWatermill) Created(ctx context.Context, ent {{ .DomainType }}) err
 		return flame.Unexpected(err)
 	}
 
-	msg := message.NewMessage(message.NewUUID(), b)
+	msg := message.NewMessage(uuid.NewString(), b)
 
 	return e.publisher.Publish(event.EventType(), msg)
 }
@@ -63,7 +63,7 @@ func (e *eventWatermill) Updated(ctx context.Context, fromEnt, toEnt {{ .DomainT
 		return flame.Unexpected(err)
 	}
 
-	msg := message.NewMessage(message.NewUUID(), b)
+	msg := message.NewMessage(uuid.NewString(), b)
 
 	return e.publisher.Publish(event.EventType(), msg)
 }
@@ -86,7 +86,7 @@ func (e *eventWatermill) Deleted(ctx context.Context, ent {{ .DomainType }}) err
 		return flame.Unexpected(err)
 	}
 
-	msg := message.NewMessage(message.NewUUID(), b)
+	msg := message.NewMessage(uuid.NewString(), b)
 
 	return e.publisher.Publish(event.EventType(), msg)
 }

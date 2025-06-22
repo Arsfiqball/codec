@@ -1,0 +1,85 @@
+package {{ .DomainPkg }}
+
+const (
+	FieldID              = "id"
+	FieldAccumulateCount = "count"
+	FieldWithSomething   = "something"
+)
+
+// Queryable fields are fields that can be used in the where clause.
+var queryableFields = []string{
+	FieldID,
+}
+
+// Groupable fields are fields that can be used in the group clause.
+var groupableFields = []string{}
+
+// Sortable fields are fields that can be used in the sort clause.
+var sortableFields = []string{
+	FieldID,
+}
+
+// Accumulable fields are fields that can be used in the accumulate clause.
+var accumulableFields = []string{
+	FieldAccumulateCount,
+}
+
+// Withable fields are fields that can be used in the with clause.
+var withableFields = []string{
+	FieldWithSomething,
+}
+
+// isQueryableField returns true if the field is queryable.
+func isQueryableField(field string) bool {
+	for _, f := range queryableFields {
+		if f == field {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isGroupableField returns true if the field is groupable.
+func isGroupableField(field string) bool {
+	for _, f := range groupableFields {
+		if f == field {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isSortableField returns true if the field is sortable.
+func isSortableField(field string) bool {
+	for _, f := range sortableFields {
+		if f == field {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isAccumulableField returns true if the field is accumulable.
+func isAccumulableField(field string) bool {
+	for _, f := range accumulableFields {
+		if f == field {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isWithableField returns true if the field is withable.
+func isWithableField(field string) bool {
+	for _, f := range withableFields {
+		if f == field {
+			return true
+		}
+	}
+
+	return false
+}

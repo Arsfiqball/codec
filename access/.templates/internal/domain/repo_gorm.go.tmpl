@@ -1,0 +1,215 @@
+package {{ .DomainPkg }}
+
+import (
+	"context"
+
+	"github.com/Arsfiqball/talkback"
+	"github.com/Arsfiqball/codec/flame"
+	"github.com/google/uuid"
+	"errors"
+	"go.opentelemetry.io/otel/trace"
+	"gorm.io/gorm"
+)
+
+type repoGorm struct {
+	tracer trace.Tracer
+	db     *gorm.DB
+}
+
+func NewRepoGorm(db *gorm.DB, tc tracer.Tracer) Repo {
+	return &repoGorm{
+		tracer: tc,
+		db:     db,
+	}
+}
+
+var repoTranslations = restql.SqlTranslations{
+	FieldID:              talkback.SqlFieldTranslation{Column: "id", TypeConverter: talkback.SqlConvertUUID},
+	FieldAccumulateCount: talkback.SqlFieldTranslation{Column: "COUNT(*)", TypeConverter: talkback.SqlConvertInt},
+}
+
+var repoPreloadable = restql.SqlPreloadable{
+	// FieldWithSomething: "Something", // Uncomment and replace with actual fields if needed
+}
+
+func (d *repoGorm) Aggregate(ctx context.Context, query Query) ({{ .DomainType }}List, error) {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.Aggregate")
+	defer span.End()
+
+	var ents []{{ .DomainType }}
+
+	plan, err := talkback.ToSqlPlan(Query, repoTranslations, repoPreloadable)
+	if err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	// FROM
+	tx := r.db.WithContext(ctx).Model({{ .DomainType }} {})
+
+	// WHERE
+	if plan.Where != "" {
+		tx = tx.Where(plan.Where, plan.WhereArgs...)
+	}
+
+	// WHERE SPECIAL: Search
+	if query.Search != "" {
+		q := "%" + query.Search + "%"
+		tx = tx.Where("name ILIKE ? OR email ILIKE ?", q, q)
+	}
+
+	// SELECT: default to all columns
+	tx = tx.Select("*")
+
+	// ORDER
+	if len(plan.Order) > 0 {
+		tx = tx.Order(plan.Order)
+	}
+
+	// LIMIT
+	if plan.Limit > 0 {
+		tx = tx.Limit(plan.Limit)
+	} else {
+		tx = tx.Limit(10)
+	}
+
+	// OFFSET
+	if plan.Offset > 0 {
+		tx = tx.Offset(plan.Offset)
+	} else {
+		tx = tx.Offset(0)
+	}
+
+	// PRELOAD
+	for _, preload := range plan.Preload {
+		tx = tx.Preload(preload)
+	}
+
+	// EXECUTE
+	if err := tx.Find(&ents).Error; err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	return {{ .DomainType }}List(ents), nil
+}
+
+func (d *repoGorm) AggregateStat(ctx context.Context, query Query) ({{ .DomainType }}StatList, error) {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.AggregateStat")
+	defer span.End()
+
+	var stats []{{ .DomainType }}Stat
+
+	plan, err := talkback.ToSqlPlan(Query, repoTranslations, repoPreloadable)
+	if err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	// FROM
+	tx := d.db.WithContext(ctx).Model({{ .DomainType }}Stat {})
+
+	// WHERE
+	if plan.Where != "" {
+		tx = tx.Where(plan.Where, plan.WhereArgs...)
+	}
+
+	// WHERE SPECIAL: Search
+	if query.Search != "" {
+		q := "%" + query.Search + "%"
+		tx = tx.Where("name ILIKE ? OR email ILIKE ?", q, q)
+	}
+
+	// GROUP
+	if plan.Group != "" {
+		tx = tx.Group(plan.Group)
+	}
+
+	// SELECT
+	if plan.Select != "" {
+		tx = tx.Select(plan.Select)
+	} else {
+		return nil, flame.Unexpected(errors.New("no select clause provided for AggregateStat"))
+	}
+
+	// ORDER
+	if len(plan.Order) > 0 {
+		tx = tx.Order(plan.Order)
+	}
+
+	// LIMIT
+	if plan.Limit > 0 {
+		tx = tx.Limit(plan.Limit)
+	} else {
+		tx = tx.Limit(10)
+	}
+
+	// OFFSET
+	if plan.Offset > 0 {
+		tx = tx.Offset(plan.Offset)
+	} else {
+		tx = tx.Offset(0)
+	}
+
+	// EXECUTE
+	if err := tx.Find(&stats).Error; err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	return {{ .DomainType }}StatList(stats), nil
+}
+
+func (d *repoGorm) GetByID(ctx context.Context, id uuid.UUID) ({{ .DomainType }}, error) {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.GetByID")
+	defer span.End()
+
+	var ent {{ .DomainType }}
+
+	if err := d.db.WithContext(ctx).First(&ent, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, flame.NotFound()
+		}
+
+		return nil, flame.Unexpected(err)
+	}
+
+	return ent, nil
+}
+
+func (d *repoGorm) Create(ctx context.Context, ent {{ .DomainType }}) ({{ .DomainType }}, error) {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.Create")
+	defer span.End()
+
+	if err := ent.{{ .DomainType }}.Validate(); err != nil {
+		return nil, flame.BadRequest().WithInfo(err.Error())
+	}
+
+	if err := d.db.WithContext(ctx).Create(&ent.{{ .DomainType }}).Error; err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	return ent, nil
+}
+
+func (d *repoGorm) Update(ctx context.Context, ent {{ .DomainType }}) ({{ .DomainType }}, error) {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.Update")
+	defer span.End()
+
+	if err := ent.{{ .DomainType }}.Validate(); err != nil {
+		return nil, flame.BadRequest().WithInfo(err.Error())
+	}
+
+	if err := d.db.WithContext(ctx).Save(&ent.{{ .DomainType }}).Error; err != nil {
+		return nil, flame.Unexpected(err)
+	}
+
+	return ent, nil
+}
+
+func (d *repoGorm) Delete(ctx context.Context, ent {{ .DomainType }}) error {
+	ctx, span := d.tracer.Start(ctx, "{{ .FeaturePkg }}/internal/{{ .DomainPkg }}.repoGorm.Delete")
+	defer span.End()
+
+	if err := d.db.WithContext(ctx).Delete(&ent.{{ .DomainType }}).Error; err != nil {
+		return flame.Unexpected(err)
+	}
+
+	return nil
+}

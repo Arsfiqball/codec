@@ -1,0 +1,27 @@
+package {{ .DomainPkg }}
+
+import (
+	"app/pkg/{{ .FeaturePkg }}/internal/model"
+)
+
+type {{ .DomainType }} struct {
+	model.{{ .DomainType }} // Embedding the {{ .DomainType }} model
+}
+
+type {{ .DomainType }}List []{{ .DomainType }}
+
+func (l {{ .DomainType }}List) CheckEach(fn func({{ .DomainType }}) error) error {
+	for _, ent := range l {
+		if err := fn(ent); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type {{ .DomainType }}Stat struct {
+	Count int64 `gorm:"column:count" json:"count,omitempty"`
+}
+
+type {{ .DomainType }}StatList []{{ .DomainType }}Stat

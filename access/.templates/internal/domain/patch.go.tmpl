@@ -1,0 +1,27 @@
+package {{ .DomainPkg }}
+
+import "github.com/Arsfiqball/codec/hat"
+
+type Patch struct {
+	AttrName hat.Unit[string] `json:"attrName,omitempty"`
+}
+
+func (p Patch) ApplyTo(ent {{ .DomainType }}) ({{ .DomainType }}, error) {
+	// Apply the patch to the entity
+
+	return ent, nil
+}
+
+func (p Patch) To{{ .DomainType }}() {{ .DomainType }} {
+	return {{ .DomainType }}{
+		// Convert Patch to {{ .DomainType }}
+	}
+}
+
+func PatchBetween(from, to {{ .DomainType }}) (Patch, error) {
+	patch := Patch{}
+
+	// If entity attribute has changed, set the patch
+
+	return patch, nil
+}

@@ -1,0 +1,54 @@
+package model
+
+import "github.com/google/uuid"
+
+type {{ .ModelType }} struct {
+	ID       uuid.UUID `gorm:"column:id" json:"id"`
+	AttrName string    `gorm:"column:attr_name" json:"attrName"`
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}) TableName() string {
+	return "{{ .ModelTable }}"
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}) Validate() error {
+	return nil // Add validation, this will ensure data consistency
+}
+
+type {{ .ModelType }}Created struct {
+	ID       uuid.UUID `json:"id"`
+	AttrName string    `json:"attrName"`
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Created) EventType() string {
+	return "{{ .ModelTableSingular }}.created"
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Created) Validate() error {
+	return nil // Add validation, this will ensure data consistency
+}
+
+type {{ .ModelType }}Updated struct {
+	ID       uuid.UUID `json:"id"`
+	AttrName string    `json:"attrName"`
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Updated) EventType() string {
+	return "{{ .ModelTableSingular }}.updated"
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Updated) Validate() error {
+	return nil // Add validation, this will ensure data consistency
+}
+
+type {{ .ModelType }}Deleted struct {
+	ID uuid.UUID `json:"id"`
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Deleted) EventType() string {
+	return "{{ .ModelTableSingular }}.deleted"
+}
+
+func ({{ .ModelReceiver }} {{ .ModelType }}Deleted) Validate() error {
+	return nil // Add validation, this will ensure data consistency
+}

@@ -1,0 +1,13 @@
+package {{ .DomainPkg }}
+
+import (
+	"context"
+	"app/pkg/{{ .FeaturePkg }}/internal/model"
+)
+
+//go:generate mockery --name Event --inpackage --case snake
+type Event interface {
+	Created(ctx context.Context, ent {{ .DomainType }}) error
+	Updated(ctx context.Context, fromEnt, toEnt {{ .DomainType }}) error
+	Deleted(ctx context.Context, ent {{ .DomainType }}) error
+}
